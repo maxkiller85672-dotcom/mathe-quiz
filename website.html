@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe Quiz Deluxe Infinity</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+    overflow:hidden;
+}
+
+.screen{
+    width:100vw;
+    height:100vh;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+.active{
+    display:flex;
+}
+
+/* =====================================================
+   FARBEN
+===================================================== */
+
+:root{
+    --bg:#050816;
+    --card:#0f172a;
+    --card2:#111827;
+
+    --cyan:#00f5ff;
+    --green:#00ff9d;
+    --red:#ff3b5c;
+    --blue:#3b82f6;
+    --purple:#c026ff;
+
+    --text:#ffffff;
+}
+
+/* =====================================================
+   NICKNAME SCREEN
+===================================================== */
+
+.title{
+    font-size:70px;
+    font-weight:900;
+    color:var(--cyan);
+    margin-bottom:20px;
+}
+
+.subtitle{
+    font-size:30px;
+    font-weight:bold;
+    margin-bottom:40px;
+}
+
+input{
+    width:400px;
+    height:80px;
+    border-radius:25px;
+    border:3px solid var(--cyan);
+    background:#0b1120;
+    color:white;
+    text-align:center;
+    font-size:35px;
+    outline:none;
+    margin-bottom:25px;
+}
+
+.info{
+    color:#64748b;
+    font-size:18px;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.menu-btn{
+    width:350px;
+    height:70px;
+    border:none;
+    border-radius:30px;
+    margin:12px;
+    font-size:28px;
+    font-weight:900;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.menu-btn:hover{
+    transform:scale(1.05);
+}
+
+.easy{
+    background:#00aa55;
+}
+
+.medium{
+    background:#ff9900;
+}
+
+.hard{
+    background:#ff4444;
+}
+
+.extreme{
+    background:var(--purple);
+}
+
+/* =====================================================
+   GAME
+===================================================== */
+
+.topbar{
+    width:90%;
+    background:var(--card);
+    border:2px solid #1e293b;
+    border-radius:25px;
+    display:flex;
+    justify-content:space-between;
+    padding:25px;
+    margin-bottom:30px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.card{
+    width:850px;
+    height:420px;
+    background:var(--card2);
+    border-radius:40px;
+    border:3px solid #1e40af;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.aufgabe{
+    font-size:70px;
+    font-weight:900;
+    margin-bottom:40px;
+}
+
+.answer{
+    width:320px;
+}
+
+.status{
+    margin-top:20px;
+    font-size:28px;
+    font-weight:900;
+}
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    color:#64748b;
+}
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    overflow:auto;
+    padding-top:40px;
+}
+
+.overlay h1{
+    font-size:70px;
+    color:var(--red);
+    margin-bottom:20px;
+}
+
+.overlay .score{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.overlay .diff{
+    font-size:26px;
+    color:var(--cyan);
+    margin-bottom:30px;
+}
+
+.ranking{
+    font-size:24px;
+    white-space:pre-line;
+    margin-top:20px;
+    text-align:left;
+}
+
+.big-btn{
+    width:280px;
+    height:70px;
+    border:none;
+    border-radius:30px;
+    margin:15px;
+    font-size:28px;
+    font-weight:900;
+    color:white;
+    cursor:pointer;
+}
+
+.retry{
+    background:var(--green);
+}
+
+.exit{
+    background:var(--red);
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================
+     NICKNAME SCREEN
+===================================================== -->
+
+<div id="nicknameScreen" class="screen active">
+
+    <div class="title">WILLKOMMEN</div>
+
+    <div class="subtitle">
+        GIB DEINEN NICKNAME EIN
+    </div>
+
+    <input type="text" id="nicknameInput">
+
+    <div class="info">
+        ENTER = WEITER
+    </div>
+
+</div>
+
+<!-- =====================================================
+     MENU
+===================================================== -->
+
+<div id="menuScreen" class="screen">
+
+    <div class="title">
+        MATHE QUIZ DELUXE
+    </div>
+
+    <div style="font-size:24px;color:#8ec5ff;margin-bottom:50px;">
+        Infinity Edition
+    </div>
+
+    <button class="menu-btn easy" onclick="setDifficulty('LEICHT')">
+        LEICHT
+    </button>
+
+    <button class="menu-btn medium" onclick="setDifficulty('MITTEL')">
+        MITTEL
+    </button>
+
+    <button class="menu-btn hard" onclick="setDifficulty('SCHWER')">
+        SCHWER
+    </button>
+
+    <button class="menu-btn extreme" onclick="setDifficulty('EXTREM')">
+        EXTREM
+    </button>
+
+</div>
+
+<!-- =====================================================
+     GAME
+===================================================== -->
+
+<div id="gameScreen" class="screen">
+
+    <div class="topbar">
+
+        <div id="frageLabel" style="color:var(--cyan)">
+            FRAGE 1
+        </div>
+
+        <div id="punkteLabel" style="color:var(--green)">
+            PUNKTE 0
+        </div>
+
+        <div id="lebenLabel" style="color:var(--red)">
+            LEBEN 3
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div id="aufgabe" class="aufgabe">
+            1 + 1 = ?
+        </div>
+
+        <input type="text" id="answerInput" class="answer">
+
+        <div id="status" class="status"></div>
+
+    </div>
+
+    <div class="footer">
+        CHEATCODE: 0000000000 = +1 LEBEN
+    </div>
+
+</div>
+
+<!-- =====================================================
+     GAME OVER
+===================================================== -->
+
+<div id="gameOver" class="overlay">
+
+    <h1>GAME OVER</h1>
+
+    <div id="finalScore" class="score"></div>
+
+    <div id="finalDiff" class="diff"></div>
+
+    <h2 style="color:var(--green)">
+        TOP 10 RANGLISTE
+    </h2>
+
+    <div id="ranking" class="ranking"></div>
+
+    <button class="big-btn retry" onclick="location.reload()">
+        TRY AGAIN
+    </button>
+
+    <button class="big-btn exit" onclick="window.close()">
+        BEENDEN
+    </button>
+
+</div>
+
+<script>
+/* =====================================================
+   VARIABLEN
+===================================================== */
+
+let nickname = "";
+
+let punkte = 0;
+let leben = 3;
+let frage = 1;
+let richtigeAntwort = 0;
+
+let maxZahl = 20;
+let schwierigkeit = "LEICHT";
+
+let rangliste = JSON.parse(
+    localStorage.getItem("rangliste")
+) || [];
+
+/* =====================================================
+   ELEMENTE
+===================================================== */
+
+const nicknameInput = document.getElementById("nicknameInput");
+const answerInput = document.getElementById("answerInput");
+
+const nicknameScreen = document.getElementById("nicknameScreen");
+const menuScreen = document.getElementById("menuScreen");
+const gameScreen = document.getElementById("gameScreen");
+
+const aufgabe = document.getElementById("aufgabe");
+const statusText = document.getElementById("status");
+
+const frageLabel = document.getElementById("frageLabel");
+const punkteLabel = document.getElementById("punkteLabel");
+const lebenLabel = document.getElementById("lebenLabel");
+
+/* =====================================================
+   NICKNAME
+===================================================== */
+
+nicknameInput.addEventListener("keydown", (e) => {
+
+    if(e.key === "Enter"){
+
+        nickname = nicknameInput.value.trim();
+
+        if(nickname === "") return;
+
+        nicknameScreen.classList.remove("active");
+        menuScreen.classList.add("active");
+    }
+});
+
+/* =====================================================
+   SCHWIERIGKEIT
+===================================================== */
+
+function setDifficulty(diff){
+
+    schwierigkeit = diff;
+
+    if(diff === "LEICHT"){
+        maxZahl = 15;
+    }
+    else if(diff === "MITTEL"){
+        maxZahl = 40;
+    }
+    else if(diff === "SCHWER"){
+        maxZahl = 80;
+    }
+    else{
+        maxZahl = 200;
+    }
+
+    menuScreen.classList.remove("active");
+    gameScreen.classList.add("active");
+
+    neueAufgabe();
+}
+
+/* =====================================================
+   AUFGABE
+===================================================== */
+
+function neueAufgabe(){
+
+    const zahl1 = random(1, maxZahl);
+    const zahl2 = random(1, maxZahl);
+
+    const art = random(0, 3);
+
+    let text = "";
+
+    if(art === 0){
+
+        richtigeAntwort = zahl1 + zahl2;
+        text = `${zahl1} + ${zahl2}`;
+    }
+    else if(art === 1){
+
+        richtigeAntwort = zahl1 - zahl2;
+        text = `${zahl1} - ${zahl2}`;
+    }
+    else if(art === 2){
+
+        richtigeAntwort = zahl1 * zahl2;
+        text = `${zahl1} × ${zahl2}`;
+    }
+    else{
+
+        richtigeAntwort = zahl1;
+
+        const temp = zahl1 * zahl2;
+
+        text = `${temp} ÷ ${zahl2}`;
+    }
+
+    aufgabe.innerText = `${text} = ?`;
+
+    answerInput.value = "";
+    answerInput.focus();
+}
+
+/* =====================================================
+   RANDOM
+===================================================== */
+
+function random(min, max){
+
+    return Math.floor(
+        Math.random() * (max - min + 1)
+    ) + min;
+}
+
+/* =====================================================
+   PRUEFEN
+===================================================== */
+
+answerInput.addEventListener("keydown", (e) => {
+
+    if(e.key === "Enter"){
+        pruefen();
+    }
+});
+
+function pruefen(){
+
+    let antwort = answerInput.value;
+
+    /* =================================================
+       CHEATCODE
+    ================================================= */
+
+    if(antwort === "0000000000"){
+
+        leben++;
+
+        lebenLabel.innerText = `LEBEN ${leben}`;
+
+        statusText.innerText = "+1 LEBEN AKTIVIERT";
+        statusText.style.color = "#c026ff";
+
+        answerInput.value = "";
+
+        return;
+    }
+
+    /* ================================================= */
+
+    antwort = parseInt(antwort);
+
+    if(isNaN(antwort)){
+
+        statusText.innerText = "NUR ZAHLEN!";
+        statusText.style.color = "#ff3b5c";
+
+        return;
+    }
+
+    if(antwort === richtigeAntwort){
+
+        punkte += 5;
+
+        statusText.innerText = "RICHTIG!";
+        statusText.style.color = "#00ff9d";
+    }
+    else{
+
+        leben--;
+
+        statusText.innerText =
+            `FALSCH! Antwort: ${richtigeAntwort}`;
+
+        statusText.style.color = "#ff3b5c";
+    }
+
+    frage++;
+
+    frageLabel.innerText = `FRAGE ${frage}`;
+    punkteLabel.innerText = `PUNKTE ${punkte}`;
+    lebenLabel.innerText = `LEBEN ${leben}`;
+
+    if(leben <= 0){
+
+        saveScore();
+        gameOver();
+
+        return;
+    }
+
+    setTimeout(neueAufgabe, 900);
+}
+
+/* =====================================================
+   SCORE SPEICHERN
+===================================================== */
+
+function saveScore(){
+
+    let gefunden = false;
+
+    for(let player of rangliste){
+
+        if(player.name.toLowerCase() === nickname.toLowerCase()){
+
+            gefunden = true;
+
+            if(punkte > player.punkte){
+
+                player.punkte = punkte;
+                player.diff = schwierigkeit;
+            }
+
+            break;
+        }
+    }
+
+    if(!gefunden){
+
+        rangliste.push({
+            name:nickname,
+            punkte:punkte,
+            diff:schwierigkeit
+        });
+    }
+
+    rangliste.sort((a,b) => b.punkte - a.punkte);
+
+    localStorage.setItem(
+        "rangliste",
+        JSON.stringify(rangliste.slice(0,10))
+    );
+}
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    const overlay =
+        document.getElementById("gameOver");
+
+    overlay.style.display = "flex";
+
+    document.getElementById("finalScore").innerText =
+        `${nickname} - ${punkte} Punkte`;
+
+    document.getElementById("finalDiff").innerText =
+        `SCHWIERIGKEIT: ${schwierigkeit}`;
+
+    let top = "";
+
+    rangliste.forEach((player, index) => {
+
+        top +=
+            `${index+1}. ` +
+            `${player.name} - ` +
+            `${player.punkte} Punkte ` +
+            `(${player.diff})\n`;
+    });
+
+    document.getElementById("ranking").innerText = top;
+}
+</script>
+
+</body>
+</html>
